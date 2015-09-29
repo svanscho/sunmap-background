@@ -7,6 +7,10 @@ import os
 import uuid
 import sh
 import datetime
+from pytz import timezone
+import pytz
+from datetime import datetime, timedelta
+import time
 
 def removeOldPicture():
 	try:
@@ -31,6 +35,20 @@ def downloadImage(url,datestring):
 def shiftImageToLeft(filename,pixels):
 	os.system(" ".join(["/usr/local/bin/convert	",filename,"-roll","-"+str(pixels),filename]))
 
+def annotateImageWithTimestamps(filename):
+	utc = timezone('UTC')
+	pst = timezone('US/Pacific-New')
+	europe = timezone('Europe/Amsterdam')
+	sydney = timezone('Australia/Sydney')
+	fmt = '%d-%m-%Y %H:%M'
+	now = utc.localize(datetime.utcnow())
+	pst_time = now.astimezone(pst).strftime(fmt)
+	europe_time = now.astimezone(europe).strftime(fmt)
+	sydney_time = now.astimezone(sydney).strftime(fmt)
+	os.system(" ".join(["/usr/local/bin/convert     ",filename,"-undercolor '#00000080'","-fill white   -annotate +220+275 ","'"+pst_time+"'",filename]))
+	os.system(" ".join(["/usr/local/bin/convert     ",filename,"-undercolor '#00000080'","-fill white   -annotate +780+225 ","'"+europe_time+"'",filename]))
+	os.system(" ".join(["/usr/local/bin/convert     ",filename,"-undercolor '#00000080'","-fill white   -annotate +1350+575 ","'"+sydney_time+"'",filename]))
+
 try:
 	removeOldPicture()
 	
@@ -46,6 +64,7 @@ try:
 	datestring = ""
 	
 	filename=downloadImage(url,datestring)
+	annotateImageWithTimestamps(filename)
 	
 	#Australia centric map
 	shiftImageToLeft(filename,650)
@@ -57,4 +76,4 @@ try:
 		desk.picture.set(filename)
 		
 except Exception as e:
-	pass
+	print e
