@@ -24,7 +24,7 @@ def getCurrentUTCtime():
 	return now.strftime("%Y%m%dT%H%M")
 
 def downloadImage(url,datestring):
-	url=url+datestring
+	#url=url+datestring
 	response = urllib2.urlopen(url)
 	filename = "/tmp/background-"+str(uuid.uuid4())+".jpg"
 	f = open(filename,'wb')
