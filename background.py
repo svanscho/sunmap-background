@@ -11,6 +11,7 @@ from pytz import timezone
 import pytz
 from datetime import datetime, timedelta
 import time
+import traceback
 
 def removeOldPicture():
 	try:
@@ -24,8 +25,10 @@ def getCurrentUTCtime():
 	return now.strftime("%Y%m%dT%H%M")
 
 def downloadImage(url,datestring):
-	#url=url+datestring
-	response = urllib2.urlopen(url)
+	url=url+datestring
+	headers = { 'User-Agent' : 'Mozilla/5.0' }
+	req = urllib2.Request(url, None, headers)
+	response = urllib2.urlopen(req)
 	filename = "/tmp/background-"+str(uuid.uuid4())+".jpg"
 	f = open(filename,'wb')
 	f.write(response.read())
@@ -77,3 +80,4 @@ try:
 		
 except Exception as e:
 	print e
+	traceback.print_exc()
