@@ -79,5 +79,5 @@ try:
 		desk.picture.set(filename)
 		
 except Exception as e:
-	print e
+	print(e)
 	traceback.print_exc()
